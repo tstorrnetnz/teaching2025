@@ -2,7 +2,7 @@
 {% block content %}
 
 <h1 style="color:green;">Add a person</h1>
-<form action="{{ url_for("add_person")}}" method="post">
+<form action="{{ url_for("add_person")}}" method="post" enctype="multipart/form-data">
 
 
 <label for="ssn">SSN:</label>
@@ -20,6 +20,8 @@
 
 <label for="age">Age:</label>
 <input type="text" id="age" name="age" placeholder="your age">  </br>
+
+<input type="file" name="image"><!-- add the file upload button - called image -->
 
 
 <button type="submit">Login</button></br>

@@ -10,18 +10,39 @@
         <li>{{ query_results[1] }}</li>
         <li>{{ query_results[2] }}</li>
         <li>{{ query_results[3] }}</li>
-        <li>{{ query_results[4] }}</li>
-   
+        <li>{{ query_results[4] }}</li>   
 
   <br/>
     <br/>
+  
+
+  <!-- The section below checks if an image url is present in the person object and only proceeds if the url is present -->
   Example using a loop below:
   {# Jinja loop, almost like Python #}
+  {# set - used to create a variable #}
+  {# if is string - is used as not all the url variables have a value #}
+  {# {{url}}  is used to access the the url} #}
     {% for result in query_results %}
         <li>{{ result}}</li>
-        
+  {% if result.get_url() is string%}
+  {% set url =  "/static/uploads/" + result.get_url() %}
+  <img src= {{url}} alt="my image" width="120" height="180" />
+  {% endif %}
     {% endfor %}
+
+  <br/>
+  <br/>
 </ul>
+<form action="{{ url_for("people")}}" method="post">
 
+<label for="personID">Plant ID:</label>
+ 
+<input type="text" id="personID" name="personID" placeholder="Enter the person ID number"> </br></br>
+<button type="submit" name="edit_button" value="search">Search</button></br>
 
+</form>
 {% endblock %}
+
+
+
+ 

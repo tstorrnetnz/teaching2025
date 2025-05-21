@@ -4,6 +4,8 @@ from sqlalchemy import create_engine, ForeignKey, Column, String, Integer,CHAR, 
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils.functions import database_exists #import to check if database exists
+from werkzeug.utils import secure_filename
+import os
 
 
 #Base has to go before all the code!
@@ -17,13 +19,16 @@ class Person(Base):
   lastname = Column("lastname", String)
   gender = Column("gender", CHAR)
   age = Column("age", Integer)
+  url = Column("imageURL", String(255))#url of image
 
-  def __init__(self, ssn, first, last, gender, age):
+  #url=None allows us to create a person without a url as well as with a url
+  def __init__(self, ssn, first, last, gender, age, url=None):
     self.ssn = ssn
     self.firstname = first
     self.lastname = last
     self.gender = gender
     self.age = age
+    self.url = url
 
   def get_ssn(self):
     return self.ssn
@@ -39,6 +44,9 @@ class Person(Base):
 
   def get_age(self):
     return self.age  
+
+  def get_url(self):
+    return self.url     
     
   def set_firstname(self, fname):
     self.firstname = fname
@@ -46,7 +54,7 @@ class Person(Base):
   
 
   def __repr__(self):
-    return f"({self.ssn}) {self.firstname} {self.lastname} ({self.gender}, {self.age})"
+    return f"({self.ssn}) {self.firstname} {self.lastname} {self.gender}, {self.age}, {self.url}"
 #=====================================THING CLASS=======================
 class Thing(Base):
   __tablename__ = "things"
@@ -128,14 +136,22 @@ def root():
 
 # about route - called by PEOPLE in the nav bar and returning
 # information about the site
-@app.route('/people')  # note the leading slash, it’s important
+@app.route('/people', methods=['POST', 'GET'])  # note the leading slash, it’s important
 def people():
-  Session = sessionmaker(bind=engine)
-  session = Session()
-  results=session.query(Person).all() 
-  print("People are ")
-  print(results)
+  if request.method == "POST":
+    ssn = request.form.get("personID")
+    print(ssn)
+    print("ssn requested is - from edit method - " + ssn)
+    return redirect(url_for('update', ids = ssn))
+  else:
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    results=session.query(Person).all()
+ 
+    print("People are ")
+    print(results)
   return render_template('people.html', page_title='PEOPLE', query_results = results)
+ 
 
 #Thing route
 @app.route('/things')  # note the leading slash, it’s important
@@ -158,7 +174,7 @@ def who_own_what():
   return render_template('who_owns_what.html', page_title='WHO OWNS WHAT', query_results = results)
 
 
-#Adding a person is quite easy. Get the data from the form, as the values are always strings, convert ssn and age to ints, create a person object, add to the database and commit.
+#Adding a person is quite easy. Get the data from the form, as the values are always strings, convert ssn and age to ints, get the image url, create a person object, add to the database and commit.
 #No validation takes place  -this is something to add.
 @app.route('/add_person', methods=['POST', 'GET'])  # note the leading slash, it’s important
 def add_person():
@@ -170,6 +186,12 @@ def add_person():
        age = request.form.get("age")
        gender = request.form.get("gender")
        print ("Your name is "+first_name + " " + last_name + " " + ssn + " " + age + " " + gender)
+
+    #Three lines below handle the image
+       image = request.files['image']
+       image_url = secure_filename(image.filename)
+       image.save(os.path.join('static/uploads', image_url))
+    
     #Create a new connection and session
        Base.metadata.create_all(bind=engine)
        Session = sessionmaker(bind=engine)
@@ -177,7 +199,7 @@ def add_person():
        ssn = int(ssn) #as data from the form is txt
        age = int(age)
     #Create a person object
-       p = Person(ssn, first_name, last_name, gender, age)
+       p = Person(ssn, first_name, last_name, gender, age, image_url)#add image url
     #Add to the database
        session.add(p)
        print("Person added" + "ssn")
@@ -227,6 +249,7 @@ def update(ids):
   lname = person.get_lastname()
   gender = person.get_gender()
   age = person.get_age()
+  url = person.get_url()
   #Above are just examples - we don't actually use them in the form below
 
   if request.method == 'POST': #Check which button is clicked
@@ -239,6 +262,8 @@ def update(ids):
       print( "Last Name is " + lname)      
       person.gender = request.form['gender']
       print( "Gender is " + gender)
+      person.url = request.form['url']
+      print( "URL is " + url)
       #person.ssn = request.form['int'] ssn is a primary key - do not change
       age = int(request.form['age'])
       person.age = age
@@ -254,7 +279,7 @@ def update(ids):
       
   print("sending variables from update")
   #Return statement below is run the first time the page is loaded.
-  return render_template("update.html",page_title='UPDATE A PERSON', ids=ssn, Fname = fname, Lname = lname, Gender = gender, Age = age)
+  return render_template("update.html",page_title='UPDATE A PERSON', ids=ssn, Fname = fname, Lname = lname, Gender = gender, Age = age, Url = url)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
