@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green;">Edit a person</h1>
+
+<p>Search for your person by entering their unique ssn. Then edit the details and save or delete the entry.</p>
+
+<form action="{{ url_for("edit_person")}}" method="post">
+
+
+<label for="ssn">SSN:</label>
+ 
+<input type="text" id="ssn" name="ssn" placeholder="Enter the person's SSN"> </br></br>
+<button type="submit" name="edit_button" value="search">Search</button></br>
+</br></br></br>
+
+</form>
+
+{% endblock %}

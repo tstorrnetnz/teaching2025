@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green;">Add a person</h1>
+<form action="{{ url_for("add_person")}}" method="post">
+
+
+<label for="ssn">SSN:</label>
+<input type="text" id="ssn" name="ssn" placeholder="a number"> </br>
+
+
+<label for="firstname">First Name:</label>
+<input type="text" id="firstname" name="fname" placeholder="firstname"></br>
+
+<label for="lastname">Last Name:</label>
+<input type="text" id="lastname" name="lname" placeholder="lastname"></br>
+
+<label for="gender">Gender:</label>
+<input type="text" id="gender" name="gender" placeholder="M, F, other"></br>
+
+<label for="age">Age:</label>
+<input type="text" id="age" name="age" placeholder="your age">  </br>
+
+
+<button type="submit">Login</button></br>
+</form>
+
+{% endblock %}

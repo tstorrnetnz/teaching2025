@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green;">Things</h1>
+
+<ul>
+   Using a straight call to the python list:
+  <br/>
+    <br/>
+        <li>{{ query_results[0] }}</li>
+        <li>{{ query_results[1] }}</li>
+        <li>{{ query_results[2] }}</li>
+        <li>{{ query_results[3] }}</li>
+        <li>{{ query_results[4] }}</li>
+   
+
+  <br/>
+    <br/>
+  Example using a loop below:
+  {# Jinja loop, almost like Python #}
+    {% for result in query_results %}
+        <li>{{ result}}</li>
+        
+    {% endfor %}
+</ul>
+
+{% endblock %}

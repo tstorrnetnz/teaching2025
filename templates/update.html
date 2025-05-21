@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green;">Edit a person {{ ids }}</h1>
+
+<p>Edit the details and save or delete the entry.</p>
+
+<!-- send any from button to update/{{ids}} -->
+<form action="/update/{{ids}}" method="post"> 
+
+
+<label for="ssn">SSN:</label>
+ 
+<input type="text" id="ssn" name="ssn" value="{{ids}}"> 
+  </br>
+<label for="firstname">First Name:</label>
+ {% if Fname|length %} <!-- You can use if statements in Jinga to control the appearance of your page depending upon the parameters passed -->
+<input type="text" id="firstname" name="fname" placeholder="firstname" value = "{{Fname}}">
+ {% else %} 
+<input type="text" id="firstname" name="fname" placeholder="firstname">
+ {% endif %} 
+</br>
+
+<label for="lastname">Last Name:</label>
+<input type="text" id="lastname" name="lname" placeholder="lastname" value={{Lname}}></br>
+
+<label for="gender">Gender:</label>
+<input type="text" id="gender" name="gender" placeholder="M, F, other" value={{Gender}}></br>
+
+<label for="age">Age:</label>
+<input type="text" id="age" name="age" placeholder="your age" value={{Age}}>  </br></br>
+
+  <!-- Note both buttons have the same name, but different values. This is used in the update method - so we can tell which button was pressed! -->
+<button type="submit" name="edit_button" value="Save">Save</button></br>
+ 
+<p> Warning - deleting a person cannot be undone!</p>
+<button type="submit" name="edit_button" value="Delete">Delete</button></br>
+</form> 
+ {% endblock %}

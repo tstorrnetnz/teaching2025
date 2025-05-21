@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green;">Who owns what</h1>
+Example using a loop below:
+  {# Jinja loop, almost like Python #}
+    {% for result in query_results %}
+        <li>{{ result}}</li>
+        
+    {% endfor %}
+
+{% endblock %}
