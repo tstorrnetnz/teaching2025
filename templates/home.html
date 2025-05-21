@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green";>Hello World</h1>
+<p> Some final thoughts about this project and where it could be taken</p>
+<ol>
+  <li style="padding-top:5px;">The database also has a one-to-many relationship (sauce) - this might be enough for Y12s</li>
+  <li style="padding-top:5px;">There are descriptions for toppings - this could be extended (GF, DF, photos etc)</li>
+  <li style="padding-top:5px;">The entire Flask app code is in one file (main.py) - config (at the very least) belongs in its own file - See <a href="https://replit.com/@Mr_D/12DTP-2020-Teddy-Bears-Picnic">Teddy Bears Picnic</a> for some ideas around that</li>
+  <li style="padding-top:5px;">There are no photos in this version - again, see TBP for ideas around that - photos can be stored as BLOBs in the database - but probably shouldn't be in this instance - use the <b>STATIC</b> folder</li>
+  <li style="padding-top:5px;">The static folder is the only part of any Flask app that users (ie: the browser) can access, everything else is secured and only available to the Flask app - so css, js, images, logos etc all need to be in there.</li>
+  <li style="padding-top:5px;">I have used inline CSS - this is generally a very bad idea - separation of concerns... content should be in HTML, style in CSS.  This is not a web design course, its all about the Flask.</li>
+  <li style="padding-top:5px;">Finally - why Pizzas? - I use this as a (and I hate this term, but I'm tired and couldn't think of another one) 'Team Building Exercise' (YAY!) - everyone chips in $5 and we order a tonne of pizza.  Not everyone can afford it - I normally find myself $30 or so out of pocket <b>#teacherlife</b> but its a good chance to get photos of pizzas to explore the use of images in a Flask app.</li>
+{% endblock %}

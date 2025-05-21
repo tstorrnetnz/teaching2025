@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h2 style="color:green;">{{ page_title }}</h2>
+<p>{{ pizza[2] }}</p>
+<ul>
+    {% for topping in toppings %}
+        <li>{{ topping[0] }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
