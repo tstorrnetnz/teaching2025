@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1 style="color:green;">Who uses what</h1>
+Example using a loop below:
+  {# Jinja loop, almost like Python #}
+    {% for result in query_results %}
+        <li>{{result.firstname}}
+          {{result.lastname}}
+          {%for thing in result.things_used.all()%}
+          {{thing.description}}
+          {{thing.tid}}
+          {{thing.owner}}
+          
+          {% endfor %}
+        
+        </li>
+        
+    {% endfor %}
+
+{% endblock %}

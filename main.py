@@ -1,13 +1,42 @@
+#This repl demonstrates one-to-many relationships using SQLAlchemy - for example one person using many things (note that one thing is still owned by one owner)
+#An explanation can be found at https://github.com/tstorrnetnz/teaching2023/wiki/Project-%236-Flask,-SQLAlchemy-example#one-to-many-relationships
+
+#One to many relationships are stored as a list inside the object. These sorts of relationships can become quite complicated. This example has an extra complication because
+#we already have a person-thing foreign key for the owner. This means that we need to add extra code to make it clear which forign-key we are actually using for "used by".
+#
+
+
+#Need to add import of relationship (from sqlalchemy.orm import declarative_base, relationship)
 from flask import Flask, render_template
 from flask import request, redirect, url_for
 from sqlalchemy import create_engine, ForeignKey, Column, String, Integer,CHAR, update
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils.functions import database_exists #import to check if database exists
 
 
 #Base has to go before all the code!
 Base = declarative_base()
+
+#We reference the THing Class from the Person Class, so 'Thing' has to come first!
+#=====================================THING CLASS=======================
+class Thing(Base):
+  __tablename__ = "things"
+
+  tid = Column("tid", Integer, primary_key=True)
+  description = Column("description", String)
+  owner = Column(Integer, ForeignKey("people.ssn"))#Foreign_key for the owner
+  user_id = Column(Integer, ForeignKey('people.ssn'))#Foreign_key for the user
+
+  def __init__(self, tid, description, owner): #note that in the constructor we don't specify a user, only the owner
+    self.tid = tid
+    self.description = description
+    self.owner = owner
+
+  def __repr__(self):
+    return f"({self.tid}) {self.description} owned by {self.owner}"
+
+
 #=====================================PERSON CLASS=======================
 class Person(Base):
   __tablename__ = "people"
@@ -17,6 +46,7 @@ class Person(Base):
   lastname = Column("lastname", String)
   gender = Column("gender", CHAR)
   age = Column("age", Integer)
+  things_used = relationship('Thing', foreign_keys=[Thing.user_id],backref='user', lazy='dynamic') #This is a column that hols the things_used (foreign_keys line indicates which foreign key in Things needs to be used.)
 
   def __init__(self, ssn, first, last, gender, age):
     self.ssn = ssn
@@ -47,21 +77,7 @@ class Person(Base):
 
   def __repr__(self):
     return f"({self.ssn}) {self.firstname} {self.lastname} ({self.gender}, {self.age})"
-#=====================================THING CLASS=======================
-class Thing(Base):
-  __tablename__ = "things"
 
-  tid = Column("tid", Integer, primary_key=True)
-  description = Column("description", String)
-  owner = Column(Integer, ForeignKey("people.ssn"))
-
-  def __init__(self, tid, description, owner):
-    self.tid = tid
-    self.description = description
-    self.owner = owner
-
-  def __repr__(self):
-    return f"({self.tid}) {self.description} owned by {self.owner}"
 #==================================MAIN CLASS================================
 #Database stuff
 db_url = "sqlite:///mydb.db" #variable for database URL
@@ -83,7 +99,7 @@ else: #database does not exist so add some data
   Session = sessionmaker(bind=engine)
   session = Session()
 
-  p1 = Person(1, "Sallie", "Weiss", "F", 24)
+  p1 = Person(1, "Sallie", "Weiss", "F", 24)#create a new person p1
   p2 = Person(2, "Henry", "Kemp", "M", 36)
   p3 = Person(3, "Harris", "Kemp", "M", 21)
   p4 = Person(4, "Ridwan", "Mcqrath", "M", 31)
@@ -116,9 +132,14 @@ else: #database does not exist so add some data
   session.add(t8)
   session.add(t9)
   session.add(t10)
+  #Things used are added below. Alternative ways could be to use a form with dropdown or radio buttons etc. 
+  p1.things_used = [t1,t3,t5]
+  p2.things_used = [t2,t4,t6]
   session.commit()
-  print("SUCCESS database created and data added")
-
+  print("SUCCESS database created and initial data added")
+  #now add some data which describes the things_used relationship
+ 
+  print("SUCCESS relationships created (things used)")
 app = Flask(__name__)
 
 # basic route
@@ -157,7 +178,25 @@ def who_own_what():
   print(results)
   return render_template('who_owns_what.html', page_title='WHO OWNS WHAT', query_results = results)
 
+#Who uses what route
+@app.route('/who_uses_what')  # note the leading slash, it’s important
+def who_uses_what():
+  Session = sessionmaker(bind=engine)
+  session = Session()
+  print("test")
+  results=session.query(Person).all()
+  print("Things used by owners are ")
+#As we have a list inside each person, we have a for inside a for to get the things used for each person
+  for result in results:
+    print(result.firstname)
+    print(result.lastname)
+    for r in result.things_used:
+      print(r.description)
+      print(r.owner)
+    
 
+  return render_template('who_uses_what.html', page_title='WHO USES WHAT', query_results = results)
+  
 #Adding a person is quite easy. Get the data from the form, as the values are always strings, convert ssn and age to ints, create a person object, add to the database and commit.
 #No validation takes place  -this is something to add.
 @app.route('/add_person', methods=['POST', 'GET'])  # note the leading slash, it’s important
