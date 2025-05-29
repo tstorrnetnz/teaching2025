@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+
+<h1 style="color:green;">User dashboard</h1>
+Hello you are logged in!
+<br>
+<a href="{{url_for('logout')}}">Press here to logout</a>
+
+{% endblock %}
