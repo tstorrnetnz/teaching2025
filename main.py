@@ -1,3 +1,4 @@
+#test
 import email_validator
 from flask import Flask, render_template, redirect, url_for, request
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -97,7 +98,7 @@ class RegisterForm(FlaskForm):
   
   submit = SubmitField("Register")
 
-
+//
   
   def validate_email(self, email):
     existing_user_email = Person.query.filter_by(email=email.data).first()
