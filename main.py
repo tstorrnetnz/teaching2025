@@ -98,7 +98,7 @@ class RegisterForm(FlaskForm):
   
   submit = SubmitField("Register")
 
-//
+#============
   
   def validate_email(self, email):
     existing_user_email = Person.query.filter_by(email=email.data).first()
