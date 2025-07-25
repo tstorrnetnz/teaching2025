@@ -166,6 +166,7 @@ def logout():
 @login_required
 def dashboard():
     return render_template('dashboard.html', page_title='DASHBOARD')
+#comment
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
