@@ -8,14 +8,12 @@ if database_exists(db_url):
   Base.metadata.create_all(bind=engine) #create a new connection to the database and open a session
   Session = sessionmaker(bind=engine)
   session = Session()
-  results=session.query(Thing, Person).filter(Thing.owner == Person.ssn).filter(Person.firstname == "Sallie").all()
-  for r in results:
-    print(r)
+  
 else: #database does not exist so add some data
   print("database does not exist - so create it and add some data")
   Base.metadata.create_all(bind=engine)
 
   Session = sessionmaker(bind=engine)
   session = Session()
-
-  p1 = Person(1, "Sallie", "Weiss", "F", 24)
+#write your code for adding people here...
+  p1 = Person(1, "Sallie", "Weiss", "F", 24)  #etc etc
