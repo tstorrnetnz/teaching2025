@@ -11,6 +11,10 @@ from sqlalchemy_utils.functions import database_exists #import to check if datab
 #to get sql alchemy to run in repl:
 #remember to import sqlalchemyutils
 
+Base = declarative_base()
+#====================================
+#Create Person and Thing classes here
+#====================================
 #Database stuff
 db_url = "sqlite:///mydb.db" #variable for database URL
 engine = create_engine(db_url, echo=True)
